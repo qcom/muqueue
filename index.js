@@ -2,8 +2,7 @@ var Promise = require('bluebird');
 var fs = Promise.promisifyAll(require('fs'));
 var path = require('path');
 
-var parseString = require('xml2js').parseString;
-var parseXmlString = Promise.promisify(parseString);
+var itunes = require('itunes-data');
 var osHomedir = require('os-homedir');
 
 var supportedPlatforms = ['darwin','win32'];
@@ -12,11 +11,18 @@ if (supportedPlatforms.indexOf(process.platform) === -1) {
 	process.exit(1);
 }
 
-function readLibrary() {
+function getParser() {
+	var parser = itunes.parser();
 	var libraryPath = path.join(osHomedir(), 'Music/iTunes/iTunes Music Library.xml');
-	var parseOptions = {
-		explicitArray: false,
-		ignoreAttrs: true
-	};
-	return fs.readFileAsync(libraryPath, 'utf8').then(parseXmlString, parseOptions);
+	fs.createReadStream(libraryPath).pipe(parser);
+	return parser;
 }
+
+var count = 0;
+getParser()
+	.on('track', function(track) {
+		// play with first object in stream
+		if (++count === 1) {
+			console.log(track);
+		}
+	});
