@@ -15,7 +15,7 @@ var _tracks = [];
 var library = {
 	init: function() {
 		var parser = itunes.parser();
-		var libraryPath = path.join(osHomedir(), 'Music/iTunes/iTunes Music Library.xml');
+		var libraryPath = path.join(osHomedir(), 'Music', 'iTunes', 'iTunes Music Library.xml');
 
 		fs.createReadStream(libraryPath).pipe(parser);
 
