@@ -1,2 +1,6 @@
+-- features --
 * throttle requests
 * don't allow one user to flood
+
+-- architecture --
+* decouple the slack custom slash command token authentication middleware from general track request server logic in server.js
